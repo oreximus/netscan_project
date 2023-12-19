@@ -17,7 +17,7 @@ def index():
     db = get_db()
     user_id = session.get('user_id')
     scans = db.execute(
-        'SELECT s.id, ip_address, description, created, scan_id, username'
+        'SELECT s.id, ip_address, description, created, scan_data, scan_id, username'
         ' FROM scan s JOIN user u ON s.scan_id = u.id'
         ' WHERE u.id = ?'
         ' ORDER BY created DESC',
@@ -26,18 +26,28 @@ def index():
     return render_template('blog/index.html', scans=scans)
 
 
-def scanning(ip_addr):
-    try:
-        ipaddress.ip_address(ip_addr)
-        nmap = nmap3.Nmap()
-        result = nmap.nmap_version_detection(
-            ip_addr, args="--script vulners --script-args mincvss+5.0")
-        data = json.dumps(result[ip_addr]["ports"], indent=2)
-        print(data)
-        with open("output.json", "w") as out_file:
-            json.dump(data, out_file)
-    except Exception:
-        print("Enter a Valid Ip Address!")
+@bp.route('/<int:id>/scan', methods=('POST',))
+@login_required
+def scanning(id):
+    db = get_db()
+    scan_id = id
+    ip_addr = db.commit(
+        'SELECT ip_address FROM scan'
+        'WHERE s.id = ?',
+        (scan_id,)
+    ).fetchone
+    db = get_db()
+    ipaddress.ip_address(ip_addr)
+    nmap = nmap3.Nmap()
+    result = nmap.nmap_version_detection(
+        ip_addr, args="--script vulners --script-args mincvss+5.0")
+    data = json.dumps(result[ip_addr]["ports"], indent=2)
+    db.execute(
+        'INSERT INTO scan_data VALUE=?',
+        (data,)
+    )
+    db.commit()
+    return redirect(url_for('blog.index'))
 
 
 @bp.route('/', methods=('GET', 'POST'))
