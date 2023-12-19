@@ -33,7 +33,7 @@
   {% endif %}
   <br><br>
   {% if g.user %}
-  <h3>{% block title %}Common Scans Dashbaord{% endblock %}</h3><br>
+  <h3>{% block title %}Common Scans Dashbaord {% endblock %}</h3><br>
     {% for scan in scans %}
             <table class="table table-hover">
             <tr>
@@ -63,7 +63,7 @@
 
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                   <div class="card-body">
-                    {{ scan['scan_output'] }}
+                    {{ json_data}}
                   </div>
                 </div>
               </div>

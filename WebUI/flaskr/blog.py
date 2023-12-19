@@ -23,31 +23,30 @@ def index():
         ' ORDER BY created DESC',
         (user_id,)
     ).fetchall()
-    return render_template('blog/index.html', scans=scans)
+    json_data = db.execute(
+        'SELECT scan_data FROM scan WHERE id = ?', (user_id,)).fetchone()
+
+    return render_template('blog/index.html', scans=scans, json_data=json_data)
 
 
 @bp.route('/<int:id>/scan', methods=('POST',))
 @login_required
 def scanning(id):
     db = get_db()
-    scan_id = id
-    ip_addr = db.commit(
-        'SELECT ip_address FROM scan'
-        'WHERE s.id = ?',
-        (scan_id,)
-    ).fetchone
-    db = get_db()
+    scanned = db.execute(
+        "SELECT ip_address FROM scan WHERE id = ?", (id))
+    ip_addr = scanned[0]
+
     ipaddress.ip_address(ip_addr)
     nmap = nmap3.Nmap()
     result = nmap.nmap_version_detection(
         ip_addr, args="--script vulners --script-args mincvss+5.0")
-    data = json.dumps(result[ip_addr]["ports"], indent=2)
-    db.execute(
-        'INSERT INTO scan_data VALUE=?',
-        (data,)
-    )
+    data = json.dumps(result[ip_addr]["ports"])
+
+    db.execute("UPDATE scan SET scan_data = ? WHERE id = ?",
+               (json.dumps(data), id))
     db.commit()
-    return redirect(url_for('blog.index'))
+    return render_template('blog/index.html')
 
 
 @bp.route('/', methods=('GET', 'POST'))
