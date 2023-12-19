@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+  <form method="post">
+  <h3>Edit "{{ scan['ip_address'] }}"</h3><br>
+    <label for="title">IP Address</label>
+    <input name="ip_addr" class="form-control" id="ip_addr"
+      value="{{ request.form['ip_addr'] or scan['ip_address'] }}" required><br>
+    <label for="body">Description</label>
+    <textarea name="description" class="form-control" id="description">{{ request.form['ip_addr'] or scan['description'] }}</textarea><br>
+    <input type="submit" class="btn btn-primary" value="Save">
+  </form>
+  <hr>
+  <form action="{{ url_for('blog.delete', id=scan['id']) }}" method="post">
+    <input type="submit" class="btn btn-danger" value="Delete" onclick="return confirm('Are you sure?');">
+  </form>
+{% endblock %}

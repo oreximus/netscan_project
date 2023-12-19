@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<h1>{% block title %}New Post{% endblock %}</h1><br>
+  <form method="post">
+    <label for="title">Title</label>
+    <input name="title" class="form-control" id="title" value="{{ request.form['ip_addr'] }}" required>
+    <label for="body">Body</label>
+    <textarea name="body" class="form-control" id="body">{{ request.form['description'] }}</textarea>
+    <input type="submit" class="btn btn-primary" value="Save">
+  </form>
+{% endblock %}

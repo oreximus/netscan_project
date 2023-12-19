@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if g.user %}
+  <br><br>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add to Scan</button>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add to Scan</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="post">
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">IP Address:</label>
+                <input name="ip_addr" class="form-control" id="title" value="{{ request.form['ip_addr'] }}" required>
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="col-form-label">Description:</label>
+                <textarea name="description" class="form-control" id="body">{{ request.form['description'] }}</textarea><br>
+                <input type="submit" class="btn btn-primary" value="Add">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  <br><br>
+  {% if g.user %}
+  <h3>{% block title %}Common Scans Dashbaord{% endblock %}</h3><br>
+    {% for scan in scans %}
+            <table class="table table-hover">
+            <tr>
+              <td>
+              <b>{{ scan['ip_address'] }}</b>
+              <br>
+              <b>Added on</b>: {{ scan['created'].strftime('%Y-%m-%d') }}<br>
+            <br>
+            <a class="btn btn-secondary btn-sm" href="{{ url_for('blog.update', id=scan['id']) }}">Edit</a><br>
+            <br>
+            <b>Description</b>:<br>
+            {{ scan['description'] }}
+              </td>
+            </tr>
+            </table>
+      {% if not loop.last %}
+      {% endif %}
+    {% endfor %}
+  {% else %}
+  <center>
+    <h3>Welcome to Netscan!</h3><br><br>
+    <a href="{{ url_for('auth.login') }}" type="button" class="btn btn-primary btn-lg">Login</a><br><br>
+    <a href="{{ url_for('auth.register') }}">Don't have an Account? Register!</a>
+  <center>
+  {% endif %}
+{% endblock %}

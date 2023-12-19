@@ -1,0 +1,12 @@
+[project]
+name = "flaskr"
+version = "1.0.0"
+description = "The Demo Network Analyzer Web UI"
+dependencies = [
+    "flask",
+    "python3-nmap"
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
