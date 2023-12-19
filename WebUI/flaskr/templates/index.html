@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+  <br><br>
+  <center>
+    <h1>Welcome to Netscan!</h1><br><br>
+    <h3>Login or Register to get Started!</h3>
+    <br>
+    <a href="{{ url_for('auth.login') }}"><button type="button" class="btn btn-primary btn-lg">Login</button></a>
+    <br><br>
+    <a href="{{ url_for('auth.register') }}">Don't have an account, Register!</a>
+  </center>
+{% endblock %}

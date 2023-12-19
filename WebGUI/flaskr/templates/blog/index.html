@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}NetScan Dashboard{% endblock %}</h1><br><br>
+  {% if g.user %}
+  <a href="{{ url_for('blog.create') }}" class="btn btn-primary">Add a Scan</a><br><br>
+  {% endif %}
+
+  <h1>Scans: </h1><br>
+  {% for post in posts %}
+    <article class="post">
+      <header>
+        <div>
+          <strong>{{ post['title'] }}</strong>
+          <div class="about">by <b>{{ post['username'] }}</b> on <b>{{ post['created'].strftime('%Y-%m-%d') }}</b></div>
+        </div>
+        {% if g.user['id'] == post['author_id'] %}
+          <a class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" class="action" href="{{ url_for('blog.update', id=post['id']) }}">Edit</a>
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form method="post">
+                      <label for="title">Title</label>
+                      <input name="title" id="title"
+                        value="{{ request.form['title'] or post['title'] }}" required>
+                      <label for="body">Body</label>
+                      <textarea name="body" id="body">{{ request.form['body'] or post['body'] }}</textarea>
+                      <input type="submit" value="Save">
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Send message</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {% endif %}
+      </header>
+      <p class="body">{{ post['body'] }}</p>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
