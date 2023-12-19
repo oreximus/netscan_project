@@ -42,7 +42,8 @@
               <br>
               <b>Added on</b>: {{ scan['created'].strftime('%Y-%m-%d') }}<br>
             <br>
-            <a class="btn btn-secondary btn-sm" href="{{ url_for('blog.update', id=scan['id']) }}">Edit</a><br>
+            <a class="btn btn-secondary btn-sm" href="{{ url_for('blog.update', id=scan['id']) }}">Edit</a>
+            <a class="btn btn-success btn-sm" href="{{ url_for('blog.update', id=scan['id']) }}">Start</a>
             <br>
             <b>Description</b>:<br>
             {{ scan['description'] }}
