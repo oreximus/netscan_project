@@ -41,7 +41,7 @@ def scanning(id):
     ipaddress.ip_address(ip)
     nmap = nmap3.Nmap()
     data = nmap.nmap_version_detection(
-        ip, args="--script vulners --script-args mincvss+5.0")
+        ip, args="--script vulners --script-args mincvss+5.0 -p- ")
     results = json.dumps(data[ip]["ports"], indent=2)
 
     buffer = StringIO()
