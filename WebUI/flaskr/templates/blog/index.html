@@ -63,31 +63,13 @@
 
                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                   <div class="card-body">
-                    <div id=cool>{{ scan['scan_data'] }}</div>
+                    <pre style="white-space: pre-wrap; word-break: keep-all;">{{ scan['scan_data'] }}</pre>
                   </div>
                 </div>
               </div>
               </td>
             </tr>
           </table>
-          <script>
-            function convertToJson() {
-                var outputText = document.getElementById("cool").innerText;
-                try {
-                    var jsonArray = JSON.parse(outputText);
-                    displayResult(JSON.stringify(jsonArray, null, 2));
-                } catch (error) {
-                    displayResult("Scan to Get Some Logs!");
-                }
-            }
-
-            function displayResult(result) {
-                document.getElementById("cool").innerText = result;
-            }
-
-            // Automatically convert on page load
-            convertToJson();
-        </script>
       {% if not loop.last %}
       {% endif %}
     {% endfor %}

@@ -8,6 +8,9 @@ from flaskr.db import get_db
 import nmap3
 import ipaddress
 import json
+from io import StringIO
+import sys
+
 
 bp = Blueprint('blog', __name__)
 
@@ -39,10 +42,17 @@ def scanning(id):
     nmap = nmap3.Nmap()
     data = nmap.nmap_version_detection(
         ip, args="--script vulners --script-args mincvss+5.0")
-    results = json.dumps(data[ip]["ports"])
+    results = json.dumps(data[ip]["ports"], indent=2)
 
+    buffer = StringIO()
+    sys.stdout = buffer
+
+    print(results)
+    final_data = buffer.getvalue()
+
+    sys.stdout = sys.__stdout__
     db.execute("UPDATE scan SET scan_data = ? WHERE id = ?",
-               (results, id,))
+               (final_data, id,))
     db.commit()
     return redirect(url_for('blog.index'))
 
