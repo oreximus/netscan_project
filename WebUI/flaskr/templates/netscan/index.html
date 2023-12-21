@@ -3,7 +3,7 @@
 {% block content %}
   {% if g.user %}
   <br><br>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add to Scan</button>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add to Scan</button>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -33,7 +33,8 @@
   {% endif %}
   <br><br>
   {% if g.user %}
-  <h3>{% block title %}Common Scans Dashbaord {{ ip }}{% endblock %}</h3><br>
+  <h3>{% block title %}Scans Dashbaord {% endblock %}</h3><br>
+    {% set count = namespace(value=0) %}
     {% for scan in scans %}
             <table class="table table-hover">
             <tr>
@@ -42,13 +43,35 @@
               <br>
               <b>Added on</b>: {{ scan['created'].strftime('%Y-%m-%d') }}<br>
             <br>
-            <a class="btn btn-secondary btn-sm" href="{{ url_for('blog.update', id=scan['id']) }}">Edit</a><br>
+            <a class="btn btn-secondary btn-sm" href="{{ url_for('netscan.update', id=scan['id']) }}">Edit</a><br><br>
+            <form action="{{ url_for('netscan.scanning', id=scan['id']) }}" method="post">
+              <input type="submit" class="btn btn-info btn-sm" value="Scan">
+            </form>
+            <br>
             <br>
             <b>Description</b>:<br>
             {{ scan['description'] }}
+            <br><br>
+            <div id="accordion">
+              <div class="card">
+                <div class="card-header" id="headingOne">
+                  <h5 class="mb-0">
+                    <button type=button class="btn btn-outline-info" data-toggle="collapse" data-target="#collapseOne{{count.value}}" aria-expanded="true" aria-controls="collapseOne{{count.value}}">
+                    Logs Data
+                    </button>
+                  </h5>
+                </div>
+
+                <div id="collapseOne{{count.value}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                  <div class="card-body">
+                    <pre style="white-space: pre-wrap; word-break: keep-all;">{{ scan['scan_data'] }}</pre>
+                  </div>
+                </div>
+              </div>
               </td>
             </tr>
-            </table>
+          </table>
+          {% set count.value = count.value + 1 %}
       {% if not loop.last %}
       {% endif %}
     {% endfor %}
